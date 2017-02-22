@@ -1,0 +1,155 @@
+// Main class
+.js-select {
+	// Original select element
+	&-original {
+		display: none;
+	}
+	// Trigger
+	&-trigger {
+		position: relative;
+		top: 0;
+		left: 0;
+		min-width: 100px;
+		text-decoration: none;
+		color: #333333;
+		background-color: #FFFFFF;
+		border: 1px solid #CCCCCC;
+		display: block;
+		overflow: hidden;
+		box-sizing: border-box;
+		cursor: pointer;
+
+		&-label {
+			padding: 6px 42px 6px 12px;
+			width: 100%;
+			color: #555555;
+			display: block;
+
+			&.placeholder {
+				color: #999999;
+			}
+		}
+
+		&-arrow {
+			position: absolute;
+			top: 1px;
+			right: 1px;
+			bottom: 1px;
+			width: 30px;
+			background-color: #FFFFFF;
+			display: block;
+
+			&-inner {
+				margin: -4px 0 0 -8px;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 0;
+				height: 0;
+				font-size: 0;
+				line-height: 0;
+				border: 8px solid transparent;
+				border-top-color: #AAAAAA;
+			}
+		}
+
+		&.active {
+			border-color: #66AFE9;
+
+			.js-select-trigger-arrow {
+				background-color: #FFFFFF;
+
+				&-inner {
+					border-top-color: #66AFE9;
+				}
+			}
+		}
+	}
+
+	// Container
+	&-container {
+		margin-top: 10px;
+		padding: 5px;
+		min-width: 100px;
+		position: absolute;
+		background-color: #FFFFFF;
+		border: 1px solid #CCCCCC;
+		display: none;
+		z-index: 1100;
+		box-sizing: border-box;
+
+		// Top arrow for the options container
+		&:before {
+			position: absolute;
+			top: -16px;
+			left: 10px;
+			width: 0;
+			height: 0;
+			border: 8px solid transparent;
+			border-bottom-color: #FFFFFF;
+			content: ' ';
+			z-index: 2;
+		}
+		&:after {
+			position: absolute;
+			top: -17px;
+			left: 10px;
+			width: 0;
+			height: 0;
+			border: 8px solid transparent;
+			border-bottom-color: #CCCCCC;
+			content: ' ';
+			z-index: 1;
+		}
+
+		&-inner {
+			min-height: 30px;
+			max-height: 300px;
+			overflow: auto;
+
+			&-group {
+				padding: 5px;
+				font-weight: bold;
+				text-decoration: none;
+				color: #333333;
+				display: block;
+			}
+
+			&-item {
+				margin: 1px 0 0 0;
+				padding: 5px 5px 5px 10px;
+				position: relative;
+				top: 0;
+				left: 0;
+				font-weight: normal;
+				text-decoration: none;
+				color: #333333;
+				border-left: 5px solid transparent;
+				cursor: pointer;
+				display: block;
+
+				&-description {
+					font-size: 90%;
+					color: #999999;
+					display: block;
+				}
+
+				&.disabled {
+					color: #999999;
+					cursor: not-allowed;
+					background-color: transparent;
+					border-left-color: transparent;
+				}
+				&.selected {
+					background-color: fade(#66AFE9, 10);
+					border-left-color: #66AFE9;
+				}
+
+				&:hover, &:focus {
+					background-color: fade(#CCCCCC, 25);
+					//border-left-color: #CCC;
+				}
+			}
+		}
+	}
+}

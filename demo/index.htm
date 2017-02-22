@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>jquery.select</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<style type="text/css">
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				font-family: tahoma, verdana, arial, sans-serif;
+				font-size: 13px;
+			}
+			input[type="text"],
+			input[type="email"],
+			input[type="password"],
+			select {
+				padding: 5px;
+				margin: 0;
+				width: 300px;
+				min-height: 30px;
+				color: #333333;
+				background-color: #FFFFFF;
+				border: 1px solid #CCCCCC;
+			}
+			input[type="checkbox"],
+			input[type="radio"] {
+				padding: 0;
+				margin: 0;
+				height: 27px;
+			}
+			.form-group {
+				display: block;
+			}
+			.form-group:after {
+				visibility: hidden;
+				display: block;
+				font-size: 0;
+				content: " ";
+				clear: both;
+				height: 0;
+			}
+			.form-group .form-label {
+				padding: 5px;
+				width: 150px;
+				min-height: 35px;
+				line-height: 30px;
+				float: left;
+			}
+			.form-group .form-element {
+				padding: 5px;
+				min-height: 35px;
+				float: left;
+			}
+			.output-wrapper {
+				margin-top: 25px;
+				width: 100%;
+			}
+			.output-container {
+				padding: 5px;
+				width: 50%;
+				float: left;
+				box-sizing: border-box;
+			}
+			.output {
+				padding: 5px;
+				height: 400px;
+				max-height: 400px;
+				border: 1px solid #CCCCCC;
+				box-sizing: border-box;
+				overflow-y: auto;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="../src/js-select.min.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../src/js-select.min.js"></script>
+		<script type="text/javascript">
+			function output(target, data) {
+				var $target = $('#' + target);
+
+				$target.append(data + '<br/>').scrollTop($target[0].scrollHeight);
+			}
+
+			function outputClear(target) {
+				var $target = $('#' + target);
+
+				$target.html('');
+			}
+
+			var dynamicOptionsSet = false;
+			var dynamicOptions    = {
+				'gender'       : [
+					{
+						'value': 'transgender',
+						'text' : 'Transgender',
+						'title': 'Chose if you\'re a bit of both !'
+					}
+				],
+				'color'        : [
+					{
+						'value': 'pink',
+						'text' : 'Pink',
+						'title': 'I\'m new !'
+					}
+				],
+				'animal'       : [
+					{
+						'value': 'armadillo',
+						'text' : 'Armadillo',
+						'title': 'I\'m new !'
+					}
+				],
+				'socialNetwork': [
+					{
+						'value': 'linkedin',
+						'text' : 'LinkedIn',
+						'title': 'I\'m new !'
+					}
+				]
+			};
+
+			$(document).ready(function () {
+				$('select').select().on({
+					'change': function () {
+						output('js-output', this.name + ' : change (' + $(this).val() + ')');
+					},
+					'open'  : function () {
+						output('js-output', this.name + ' : open');
+					},
+					'close' : function () {
+						output('js-output', this.name + ' : close');
+					}
+				});
+
+				$('select[name="halfWidth"]').select({
+					containerWidthModifier: 0.5
+				});
+				$('select[name="doubleWidth"]').select({
+					containerWidthModifier: 2
+				});
+
+				$('form')
+					.on('submit', function () {
+						outputClear('form-output');
+
+						var data = $(this).serializeArray();
+						for (var dataKey in data) {
+							if (data.hasOwnProperty(dataKey)) {
+								output('form-output', data[dataKey].name + ' = ' + data[dataKey].value);
+							}
+						}
+
+						return false;
+					})
+					.on('reset', function () {
+						outputClear('js-output');
+						outputClear('form-output');
+					});
+
+				$('#updateOptions').on('click', function () {
+					for (var selectName in dynamicOptions) {
+						if (dynamicOptions.hasOwnProperty(selectName)) {
+							for (var i = 0; i < dynamicOptions[selectName].length; i++) {
+								var option = dynamicOptions[selectName][i];
+								if (!dynamicOptionsSet) {
+									$('select[name^=' + selectName + ']').append('<option value="' + option.value + '" title="' + option.title + '">' + option.text + '</option>');
+								} else {
+									$('select[name^=' + selectName + ']').find('option[value=' + option.value + ']').remove();
+								}
+							}
+						}
+					}
+
+					if (!dynamicOptionsSet) {
+						dynamicOptionsSet = true;
+						output('js-output', 'INFO: New options added');
+					} else {
+						dynamicOptionsSet = false;
+						output('js-output', 'INFO: New options removed again');
+					}
+
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<form method="get">
+			<div class="form-group">
+				<div class="form-label">
+					Email
+				</div>
+				<div class="form-element">
+					<input type="email" name="email" placeholder="Email" class="form-control">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Name
+				</div>
+
+				<div class="form-element">
+					<input type="text" name="name" placeholder="Name" class="form-control">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Gender
+				</div>
+
+				<div class="form-element">
+					<select size="1" name="gender" class="form-control" data-placeholder="Choose gender">
+						<option value="male" title="Chose if you're a real man !">Male</option>
+						<option value="female" title="Chose if you're a real WOman !">Female</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Favorite colors
+				</div>
+
+				<div class="form-element">
+					<select size="5" name="color[]" multiple="multiple" class="form-control" data-placeholder="Choose multiple colors">
+						<option value="blue">Blue</option>
+						<option value="green">Green</option>
+						<option value="red">Red</option>
+						<option value="yellow">Yellow</option>
+						<option value="beige">Beige</option>
+						<option value="cyan">Cyan</option>
+						<option value="purple">Purple</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Favorite animals
+				</div>
+
+				<div class="form-element">
+					<select size="5" name="animal[]" multiple="multiple" class="form-control" data-placeholder="Choose multiple animals">
+						<optgroup label="Indoor">
+							<option value="dog" selected="selected">Dog</option>
+							<option value="cat" selected="selected">Cat</option>
+							<option value="fish">Fish</option>
+							<option value="rodent">Rodent</option>
+							<option value="bird" disabled="disabled">Bird</option>
+							<option value="exotic" disabled="disabled">Exotic</option>
+						</optgroup>
+						<optgroup label="Outdoor">
+							<option value="horse">Horse</option>
+							<option value="cow">Cow</option>
+							<option value="pig">Pig</option>
+							<option value="fox">Fox</option>
+							<option value="moose">Moose</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Favorite social network
+				</div>
+
+				<div class="form-element">
+					<select name="socialNetwork" class="form-control">
+						<optgroup label="Popular">
+							<option value="facebook">Facebook</option>
+							<option value="google+">Google+</option>
+							<option value="twitter">Twitter</option>
+						</optgroup>
+						<optgroup label="Not so much popular">
+							<option value="ello">Ello</option>
+							<option value="mySpace">MySpace</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Half width select
+				</div>
+
+				<div class="form-element">
+					<select name="halfWidth" class="form-control">
+						<option value="foo">Foo</option>
+						<option value="bar">Bar</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Double width select
+				</div>
+
+				<div class="form-element">
+					<select name="doubleWidth" class="form-control">
+						<option value="foo">Foo</option>
+						<option value="bar">Bar</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-label">
+					Remember me
+				</div>
+				<div class="form-element">
+					<input type="hidden" name="remember_me" value="0">
+					<input type="checkbox" name="remember_me" value="1">
+				</div>
+			</div>
+			<div class="form-group">
+				<button type="submit">Submit form</button>
+				<button type="reset">Reset form</button>
+				<button type="button" id="updateOptions">Update options</button>
+			</div>
+		</form>
+
+		<div class="output-wrapper">
+			<div class="output-container">
+				<strong>Javascript output</strong>
+				<div class="output" id="js-output"></div>
+			</div>
+
+			<div class="output-container">
+				<strong>Form data</strong>
+				<div class="output" id="form-output"></div>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+	</body>
+</html>
